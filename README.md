@@ -275,6 +275,8 @@ class ChangeLearningRateObserver(Observer):
             # Do not use this in production code this is educational only
             if new_state.loss > state.loss:
                 state.lr = state.lr * 0.1
+        self.state = new_state
+
 ```
 
 But this is a powerful framework and we can also implement something like logging without changing the library code.
@@ -289,6 +291,7 @@ class LogObserver(Observer):
         with open(filename, "w") as f:
             for key, value in new_state.items():
                 f.write(f"{key}:{value}")
+        self.state = new_state
 ```
 
 
