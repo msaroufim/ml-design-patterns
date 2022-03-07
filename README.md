@@ -167,6 +167,7 @@ class Dataset:
         
         # Return a batch of examples
         if batch > 0:
+            # TODO: Fix typo here, this will only return a single or 0 elements
             self.elements = self.elements + batch
             return self.data[self.elements : self.elements + batch]
         
