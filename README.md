@@ -370,7 +370,10 @@ As another exercise vectorization on CPU is also another technique to eliminate 
 
 ## TODO
 * Autograd - https://marksaroufim.medium.com/automatic-differentiation-step-by-step-24240f97a6e6 (Maybe I need to update this tutorial with some python code)
-* Matrix Multiplication - I need to ask Chris for a good reference
+* Matrix Multiplication
+    * http://supertech.csail.mit.edu/papers/Prokop99.pdf
+    * https://github.com/mitmath/18335/blob/spring21/notes/oblivious-matmul.pdf
 * Distributed patterns: good tutorial here https://huggingface.co/docs/transformers/parallelism
 * Decorator design pattern @decorator
+* Strategy pattern
 
