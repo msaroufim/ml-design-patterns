@@ -452,7 +452,7 @@ So now someone else that doesn't understand how your whole trainer codebase work
 class AdamOptimizer(Optimizer):
     def step(self, beta_1 : float, beta_2 : float, epsilon : float):
         # Out of core Adam implementation here
-
+```
 
 
 ## TODO
