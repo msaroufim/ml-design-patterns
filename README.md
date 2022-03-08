@@ -366,7 +366,94 @@ model.forward(tensor)
 
 Remember GPUs aren't that great at doing many small operations because there's an overhead to sending data to it so as much as possible it's better to batch jobs into large ones to take advantage of speedups. (Technically this can be worked around with CUDA graphs but that's still a relatively new feature)
 
-As another exercise vectorization on CPU is also another technique to eliminate for loops but by operating over chunks of data concurrently. So for example some new newer Intel CPUs will turn matrices into long vectors and do matrix math on them by using a large instruction widwth AVX512.
+As another exercise vectorization on CPU is also another technique to eliminate for loops but by operating over chunks of data concurrently. So for example some new newer Intel CPUs will turn matrices into long vectors and do matrix math on them by using a large instruction width AVX512.
+
+## Decorator
+Decorators are a technique to add functionality to a function or class without modifying its code. You may have already heard of or used decorators like `@memoize, @lru_cache, @profile, @step`
+
+As an example let's take a look at how to implement a `@profile` decorator borrowing code from https://medium.com/uncountable-engineering/pythons-line-profiler-32df2b07b290
+
+```python
+from line_profiler import LineProfiler
+
+profiler = LineProfiler()
+
+# A decorator is just a python function that takes in a function
+def profile(func)
+    # Inner function takes in unnamed and named arguments
+    def inner(*args, **kwargs)
+        # New code decorator adds
+        profiler.add_function(func)
+        profiler.enable_by_count()
+
+        # Running the decorated function
+        return func(*args, **kwargs)
+    return inner
+```
+
+So now you can just run
+
+```python
+@profile
+def my_slow_func():
+    # some terrible code here
+```
+
+In the above decorator we ran some commands before returning `func` but we could also change `func`, its arguments or do whatever we please this is another one of those patterns like callbacks that let you extend some code without modifying it.
+
+One of the most interesting decorators is the FastAPI one https://github.com/tiangolo/fastapi
+
+```python
+@app.get("/")
+def read_root():
+    return {"Hello": "World"}
+```
+
+The above application redirects calls to `/` to the `read_root()` function so digging into the code a bit you'll find a function called `get()` in `fastapi/application.py` https://github.com/tiangolo/fastapi/blob/master/fastapi/applications.py#L425
+
+It's a complicated function but what we care about is
+
+```python
+def get(...) -> Callable[DecoratedCallable]:
+    return self.router.get(...)
+```
+
+Digging through the code a bit more we find that `add_api_route()` whenever a new `@app.get()` is called where see `func` being returned in much the same way as it is in the plain profiling decorator https://github.com/tiangolo/fastapi/blob/87e29ec2c54ce3651939cc4d10e05d07a2f8b9ce/fastapi/applications.py#L378
+
+The flipside of decorators is that they can lead you to a monolithic architecture where your infrastructure and deployment is tightly coupled to your implementation, this is generally fine if you're a startup but not so fine if multiple people are contributing code to the same place.
+
+## Strategy Pattern
+
+The strategy pattern is classic Object Oriented programming and is generally useful when you to set some particular strategy for an object without constraining it too much as a library designer.
+
+For example suppose you're creating a new Trainer class and don't have time to implement all optimizers that people care about. So you start with adding support for an SGDOptimizer
+```python
+class Trainer:
+    def __init__(self):
+        optimizer : Optimizer = SGDOptimizer
+        ...
+
+# Create an abstract optimizer class
+class Optimizer(ABC):
+    @abstractmethod
+    # We don't want to constrain the input types for such a function
+    # Return type is a tensor because value in a tensor needs to be changed by a bit
+    def step(*args, **kwargs) -> Tensor:
+        pass 
+
+class SGDOptimizer(Optimizer):
+    def step(self, learn_rate : float, n_iter : int, tolerance : float):
+        # Your SGD implementation here
+```
+
+So now someone else that doesn't understand how your whole trainer codebase works could create a new optimizer by just making sure to inherit from `Optimizer`
+
+```python
+class AdamOptimizer(Optimizer):
+    def step(self, beta_1 : float, beta_2 : float, epsilon : float):
+        # Out of core Adam implementation here
+
+
 
 ## TODO
 * Autograd - https://marksaroufim.medium.com/automatic-differentiation-step-by-step-24240f97a6e6 (Maybe I need to update this tutorial with some python code)
@@ -374,6 +461,5 @@ As another exercise vectorization on CPU is also another technique to eliminate 
     * http://supertech.csail.mit.edu/papers/Prokop99.pdf
     * https://github.com/mitmath/18335/blob/spring21/notes/oblivious-matmul.pdf
 * Distributed patterns: good tutorial here https://huggingface.co/docs/transformers/parallelism
-* Decorator design pattern @decorator
 * Strategy pattern
 
