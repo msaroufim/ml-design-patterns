@@ -97,18 +97,16 @@ A real world orchestrator would need to take care of dependency management, sche
 Function as data is something LISP programmers talk a lot about. The main idea is you could have a function like 
 
 ```lisp
-<!-- Add 1 and 2 -->
+;; Add 1 and 2
 (+ 1 2)
 ```
 
 But if you add a quote at the beginning of it then it becomes a string
 
-```
 ```lisp
-<!-- The string (+ 1 2)-->
+;; The string (+ 1 2)
 '(+ 1 2)
 ```
-
 
 This is powerful because now you could have a seperate program analyze the string `(+ 1 2)` realize that the inputs never change, the function is pure so the outputs never change so this function can be replaced by `3`
 
