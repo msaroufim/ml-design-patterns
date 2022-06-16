@@ -78,9 +78,8 @@ class WorkflowEngine():
         for key, value in dag.items():
             Step(key, value, False)
 
-@dataclass
 class Step():
-    def __init(self, inputs, outputs, dependencies_met):
+    def __init__(self, inputs, outputs, dependencies_met):
         self.inputs = inputs
         self.outputs = outputs
         self.dependencies_met = False
