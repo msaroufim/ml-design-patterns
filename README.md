@@ -458,5 +458,3 @@ class AdamOptimizer(Optimizer):
     * http://supertech.csail.mit.edu/papers/Prokop99.pdf
     * https://github.com/mitmath/18335/blob/spring21/notes/oblivious-matmul.pdf
 * Distributed patterns: good tutorial here https://huggingface.co/docs/transformers/parallelism
-* Strategy pattern
-
